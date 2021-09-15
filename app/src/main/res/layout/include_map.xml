@@ -1,0 +1,384 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.example.xingliansdk.widget.TitleBarLayout
+        android:id="@+id/titleBar"
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize"
+        android:visibility="gone"
+        app:homeBackClick="true"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:midtitle="步行"
+        app:showHome="true"
+        app:titleTextColor01="@color/main_text_color" />
+
+
+
+
+
+    <include
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/titleBar"
+        layout="@layout/amap_running_status_view"/>
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constMap"
+        android:visibility="visible"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/titleBar">
+
+
+
+        <FrameLayout
+            android:id="@+id/mMapContent"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toTopOf="@+id/conBottom"
+            app:layout_constraintTop_toTopOf="parent" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tvTest"
+            android:text="定位按钮"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/conBottom"
+            android:padding="10dp"
+            />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/conBottom"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/map_top_radius"
+            android:padding="10dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent">
+
+            <TextView
+                android:id="@+id/tvCalories"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:gravity="center"
+                android:text="0"
+                android:textColor="@color/main_text_color"
+                android:textSize="60sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="千卡"
+                android:textColor="@color/main_text_color"
+                android:textSize="18sp"
+                android:layout_marginBottom="16dp"
+                app:layout_constraintBottom_toBottomOf="@+id/tvCalories"
+                app:layout_constraintStart_toEndOf="@+id/tvCalories" />
+
+            <LinearLayout
+                android:id="@+id/llConnect"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:gravity="center"
+                android:orientation="vertical"
+                app:layout_constraintTop_toBottomOf="@+id/tvCalories">
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:padding="5dp"
+                        android:textSize="@dimen/text_size_18"
+                        android:layout_height="wrap_content"
+                        android:text="运动时间"/>
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:padding="5dp"
+                        android:textSize="@dimen/text_size_18"
+                        android:layout_height="wrap_content"
+                        android:text="距离/公里"/>
+
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:padding="5dp"
+                        android:textSize="@dimen/text_size_18"
+                        android:layout_height="wrap_content"
+                        android:text="配速"/>
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+
+                    <Chronometer
+                        android:id="@+id/timer"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:format="%s"
+                        android:padding="3dp"
+                        android:maxLines="1"
+                        android:text="00:00:00"
+                        android:textSize="24sp" />
+
+                    <TextView
+                        android:id="@+id/tvDistance"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:maxLines="1"
+                        android:padding="3dp"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:text="0.00"
+                        android:textColor="@color/main_text_color"
+                        android:textSize="24sp" />
+
+
+                    <TextView
+                        android:id="@+id/tvPace"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:maxLines="1"
+                        android:padding="3dp"
+                        android:gravity="center"
+                        android:text="0′00″"
+                        android:textColor="@color/main_text_color"
+                        android:textSize="24sp" />
+
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+            <View
+                android:id="@+id/view_1"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="24dp"
+                android:background="@color/color_view"
+                app:layout_constraintTop_toBottomOf="@+id/llConnect" />
+
+
+            <TextView
+                android:id="@+id/statusRunningPressView"
+                android:layout_gravity="center"
+                android:background="@drawable/round_green"
+                android:gravity="center"
+                android:text="暂停"
+                android:textColor="@color/white"
+                android:textSize="23sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/view_1"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                android:layout_width="100dp"
+                android:layout_height="100dp"/>
+
+
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/statusAmapOperateLayout"
+                app:layout_constraintTop_toBottomOf="@+id/view_1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+
+                <View
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:layout_width="10dp"
+                    android:layout_height="1dp"
+                    android:id="@+id/statusTempView"/>
+
+
+                <com.example.xingliansdk.view.PressView
+                    android:id="@+id/statusStopPressView"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:layout_marginEnd="15dp"
+                    app:AnimSporShowStarttext="结束"
+                    app:status_circle_color = "@color/red"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintRight_toLeftOf="@id/statusTempView"
+                    android:layout_width="115dp"
+                    android:layout_height="115dp"/>
+
+
+                <TextView
+                    android:id="@+id/statusContinuePressView"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/round_green"
+                    android:gravity="center"
+                    android:text="继续"
+                    android:textSize="23sp"
+                    android:layout_marginStart="15dp"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toRightOf="@id/statusTempView"
+                    android:textColor="@color/white" />
+
+
+                <TextView
+                    app:layout_constraintTop_toBottomOf="@id/statusStopPressView"
+                    app:layout_constraintRight_toRightOf="@id/statusStopPressView"
+                    app:layout_constraintLeft_toLeftOf="@id/statusStopPressView"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:padding="5dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="长按结束"/>
+
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:gravity="center"
+                android:visibility="gone"
+                android:orientation="horizontal"
+                app:layout_constraintTop_toBottomOf="@+id/view_1">
+
+
+                <com.example.xingliansdk.view.LongClickView
+                    android:id="@+id/longSave"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_marginRight="24dp"
+                    android:visibility="gone"
+                    app:annulusColor="@color/red"
+                    app:annulusWidth="5"
+                    app:delayMilliseconds="40"
+                    app:maxSeconds="3" />
+
+                <TextView
+                    android:id="@+id/tvStop"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_marginRight="24dp"
+                    android:background="@drawable/round_red"
+                    android:gravity="center"
+                    android:text="暂停"
+                    android:textColor="@color/white" />
+
+                <TextView
+                    android:id="@+id/tvGoOn"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_marginLeft="24dp"
+                    android:background="@drawable/background__round_green"
+                    android:gravity="center"
+                    android:text="继续"
+                    android:textColor="@color/white"
+                    android:visibility="gone" />
+            </LinearLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <TextView
+        android:id="@+id/tvNumberAnim"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/red"
+        android:textSize="100sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <FrameLayout
+        android:id="@+id/amapBackLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="30dp"
+        android:background="@drawable/black_circle_click_layout"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@mipmap/icon_arrow_left"
+            android:scaleType="centerInside" />
+    </FrameLayout>
+
+
+    <LinearLayout
+        android:id="@+id/llRunningGPS"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:background="@drawable/item_gps_weak_bg"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:layout_marginTop="@dimen/widget_size_30"
+        android:layout_marginEnd="@dimen/widget_size_15"
+        android:paddingStart="@dimen/widget_size_15"
+        android:paddingTop="@dimen/widget_size_5"
+        android:paddingEnd="@dimen/widget_size_15"
+        android:paddingBottom="@dimen/widget_size_5"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="GPS"
+            android:textSize="@dimen/text_size_14" />
+
+        <ImageView
+            android:id="@+id/ivRunningGPS"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/widget_size_12"
+            android:src="@mipmap/icon_gps_1" />
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<litepal>
+<dbname value="starlink_db"/>
+
+    <version value = "1"/>
+
+    <list>
+        <!--地图运动数据-->
+        <mapping class="com.example.db.AmapSportBean"/>
+
+        <mapping class="com.example.db.TestDB"/>
+
+    </list>
+
+</litepal>
