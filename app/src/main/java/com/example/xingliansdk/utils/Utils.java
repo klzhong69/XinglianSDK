@@ -28,6 +28,23 @@ public class Utils {
 
 
     /**
+     * 小数相加
+     * @param v1
+     * @param v2
+     * @return
+     */
+    public static double add(double v1, double v2) {
+        BigDecimal b1 = new BigDecimal(Double.toString(v1));
+
+        BigDecimal b2 = new BigDecimal(Double.toString(v2));
+
+        return b1.add(b2).doubleValue();
+
+    }
+
+
+
+    /**
      * 获取当前时间，格式为 :yyyy-MM-dd
      */
     public static String getCurrentDate() {

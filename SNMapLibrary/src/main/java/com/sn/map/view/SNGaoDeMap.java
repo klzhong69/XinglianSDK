@@ -73,7 +73,7 @@ public class SNGaoDeMap extends SNMapHelper {
         this.mMapView = mMapView;
         onActivityCreated(activity, savedInstanceState);
         geocoderSearch = new GeocodeSearch(activity);
-        lineWidth = activity.getResources().getDisplayMetrics().density * 5;
+        lineWidth = activity.getResources().getDisplayMetrics().density * 10;
         mEndMarkerIcon = createIcon(activity, R.drawable.ic_location);
         mBeginMarkerIcon = createIcon(activity, R.drawable.ic_location_begin);
 

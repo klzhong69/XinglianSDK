@@ -5,9 +5,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.db.AmapSportBean;
@@ -81,14 +83,37 @@ public class AmapRecordAdapter extends RecyclerView.Adapter<AmapRecordAdapter.Am
 
     class AmapRecordViewHolder extends RecyclerView.ViewHolder{
 
-        private ImageView typeImg;
-        private TextView distanceTv;
-        private TextView caloriesTv;
-        private TextView durationTv;
-        private TextView currTimeTv;
+
+        private ConstraintLayout itemMonthLayout;
+        private TextView itemMonthDayTv;
+        private ImageView itemMonthImg;
+        private TextView walkCountTv;
+        private TextView runCountTv;
+        private TextView cycleCountTv;
+        private LinearLayout detailLayout;
+
+        private RecyclerView itemDetailRv;
+
+
+        private ImageView typeImg;  //每天的item类型
+        private TextView distanceTv;  //距离
+        private TextView caloriesTv;  //卡路里
+        private TextView durationTv;  //持续时间长
+        private TextView currTimeTv;  //天
 
         public AmapRecordViewHolder(@NonNull View itemView) {
             super(itemView);
+
+
+            itemMonthLayout = itemView.findViewById(R.id.itemRecyclerMonthLayout);
+            itemMonthImg = itemView.findViewById(R.id.itemSportRecordImg);
+            itemMonthDayTv = itemView.findViewById(R.id.itemSportRecordDateTv);
+            walkCountTv = itemView.findViewById(R.id.itemRecordMonthWalkDistanceTv);
+            runCountTv = itemView.findViewById(R.id.itemRecordMonthRunDistanceTv);
+            cycleCountTv = itemView.findViewById(R.id.itemRecordMonthCycleDistanceTv);
+
+            itemDetailRv = itemView.findViewById(R.id.itemRecordMonthRecyclerView);
+
 
             typeImg = itemView.findViewById(R.id.itemAmapSportTypeImg);
             distanceTv = itemView.findViewById(R.id.itemAmapSportDistanceTv);

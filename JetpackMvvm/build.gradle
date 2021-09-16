@@ -1,6 +1,14 @@
-apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
+//apply plugin: 'com.android.library'
+//apply plugin: 'kotlin-android'
+//apply plugin: 'kotlin-android-extensions'
+
+plugins{
+    id 'com.android.library'
+    id 'kotlin-android'
+    id 'kotlin-android-extensions'
+}
+
+
 //apply plugin: 'com.novoda.bintray-release'
 android {
     compileSdkVersion 29
@@ -13,9 +21,16 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles 'consumer-rules.pro'
     }
-    dataBinding{
-        enabled = true
+//    dataBinding{
+//        enabled = true
+//       // dataBinding = true
+//    }
+
+    buildFeatures {
+        dataBinding = true
     }
+
+
     buildTypes {
         release {
             minifyEnabled false

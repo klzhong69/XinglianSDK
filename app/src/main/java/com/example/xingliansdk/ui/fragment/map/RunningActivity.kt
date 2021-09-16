@@ -75,7 +75,7 @@ class RunningActivity : BaseActivity<MainViewModel>(), View.OnClickListener, IRu
             .init()
         SNEventBus.register(this)
 
-
+        //val iLocation = GaoDeLocationImpl(this,2 * 1000,5);
 
 
         mExerciseDao = AppDataBase.instance.getItemExerciseRecordNode()
@@ -516,8 +516,8 @@ class RunningActivity : BaseActivity<MainViewModel>(), View.OnClickListener, IRu
 
     private fun initMap(savedInstanceState: Bundle?) {
         TLog.error("savedInstanceState$savedInstanceState")
-        //val iLocation = GpsLocationImpl(this, 1000, 10)
-        val iLocation = GaoDeLocationImpl(this,2 * 1000,5);
+        val iLocation = GpsLocationImpl(this, 1000, 10)
+//        val iLocation = GaoDeLocationImpl(this,2 * 1000,5);
 //        TLog.error("iLocation+="+iLocation.lastLocation.latitude)
 //        TLog.error("iLocation+="+iLocation.lastLocation.longitude)
 //        TLog.error("iLocation+="+iLocation.lastLocation.altitude)

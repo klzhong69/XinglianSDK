@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.db.AmapRecordBean;
 import com.example.db.AmapSportBean;
 import com.example.db.DbManager;
 import com.example.db.TestDB;
@@ -27,6 +28,7 @@ import com.orhanobut.hawk.Hawk;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -81,8 +83,8 @@ public class AmapSportRecordActivity extends AppCompatActivity implements View.O
         recordRecyclerView.setLayoutManager(linearLayoutManager);
 
         list = new ArrayList<>();
-        amapRecordAdapter = new AmapRecordAdapter(list,this);
-        recordRecyclerView.setAdapter(amapRecordAdapter);
+//        amapRecordAdapter = new AmapRecordAdapter(list,this);
+//        recordRecyclerView.setAdapter(amapRecordAdapter);
 
         titleBarLayout.setTitleBarListener(new TitleBarLayout.TitleBarListener() {
             @Override
@@ -102,17 +104,17 @@ public class AmapSportRecordActivity extends AppCompatActivity implements View.O
         });
 
 
-        amapRecordAdapter.setAmapOnItemClickListener(new AmapRecordAdapter.AmapOnItemClickListener() {
-            @Override
-            public void onAmapItemClick(int position) {
-                AmapSportBean amapSportBean = list.get(position);
-                if(amapSportBean == null)
-                    return;
-                Intent intent = new Intent(AmapSportRecordActivity.this, AmapHistorySportActivity.class);
-                intent.putExtra("sport_position",amapSportBean);
-                startActivity(intent);
-            }
-        });
+//        amapRecordAdapter.setAmapOnItemClickListener(new AmapRecordAdapter.AmapOnItemClickListener() {
+//            @Override
+//            public void onAmapItemClick(int position) {
+//                AmapSportBean amapSportBean = list.get(position);
+//                if(amapSportBean == null)
+//                    return;
+//                Intent intent = new Intent(AmapSportRecordActivity.this, AmapHistorySportActivity.class);
+//                intent.putExtra("sport_position",amapSportBean);
+//                startActivity(intent);
+//            }
+//        });
 
     }
 
@@ -140,15 +142,69 @@ public class AmapSportRecordActivity extends AppCompatActivity implements View.O
                 showEmpty();
                 return;
             }
-            emptyTv.setVisibility(View.GONE);
-            list.clear();
-            list.addAll(sportBeanList);
-            amapRecordAdapter.notifyDataSetChanged();
+
+            analyseData(sportBeanList);
+
+//            emptyTv.setVisibility(View.GONE);
+//            list.clear();
+//            list.addAll(sportBeanList);
+//            amapRecordAdapter.notifyDataSetChanged();
         }catch (Exception e){
             e.printStackTrace();
         }
 
     }
+
+
+    private List<AmapRecordBean> resultList = new ArrayList<>();
+
+    private void analyseData(List<AmapSportBean> sportLt){
+        HashMap<String,Object> monthMap = new HashMap<>();
+        resultList.clear();
+
+        double countDistance = 0;
+        double countCalories = 0;
+
+        List<AmapSportBean> itemList = new ArrayList<>();
+
+        for(AmapSportBean amapSportBean : sportLt){
+
+            AmapRecordBean amapRecordBean = new AmapRecordBean();
+
+            //月份
+            String monthStr = amapSportBean.getYearMonth();
+            String currDistance = amapSportBean.getDistance();
+            String currCalories = amapSportBean.getCalories();
+
+            amapRecordBean.setMonthStr(monthStr);
+
+            if(monthMap.containsKey(monthStr)){
+                countCalories = Utils.add(countCalories,Double.parseDouble(currCalories));
+                countDistance = Utils.add(countDistance,Double.parseDouble(currDistance));
+                amapRecordBean.setDistanceCount(countDistance+"");
+                amapRecordBean.setCaloriesCount(countCalories+"");
+                itemList.add(amapSportBean);
+            }else{
+                itemList.clear();
+                monthMap.put(monthStr,amapSportBean);
+                countDistance = Utils.add(countDistance,Double.parseDouble(currCalories));
+                countCalories = Utils.add(countCalories,Double.parseDouble(currCalories));
+                amapRecordBean.setDistanceCount(countDistance+"");
+                amapRecordBean.setCaloriesCount(countCalories+"");
+                itemList.add(amapSportBean);
+
+            }
+
+            amapRecordBean.setList(itemList);
+            resultList.add(amapRecordBean);
+
+        }
+
+
+        Log.e(TAG,"------转换="+new Gson().toJson(resultList));
+    }
+
+
 
 
     private void showEmpty(){
