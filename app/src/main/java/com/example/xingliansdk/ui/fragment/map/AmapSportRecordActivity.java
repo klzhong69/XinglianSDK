@@ -1,5 +1,6 @@
 package com.example.xingliansdk.ui.fragment.map;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -7,6 +8,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -33,7 +35,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 地图运动记录
+ * 地图运动记录,现在只查询本地数据库，后续上传后台后根据接口拿数据
  * Created by Admin
  * Date 2021/9/12
  */
@@ -49,13 +51,24 @@ public class AmapSportRecordActivity extends AppCompatActivity implements View.O
 
     private TextView emptyTv;
 
-    private TextView dateTv;
-    private ImageView leftImg,rightImg;
+//    private ImageView leftImg,rightImg;
 
     private String currDay = Utils.getCurrentDate();
 
+    //返回
+    private ImageView recordTitleBackImg;
+    //标题
+    private TextView recordSportTitleTv;
+
 
     private List<AmapRecordBean> resultList = new ArrayList<>();
+
+    String[] typeStr = new String[]{"所有运动","步行","跑步","骑行"};
+    //运动类型
+    private int sportType;
+
+    //类型弹窗
+    private AlertDialog.Builder alert;
 
     @Override
     protected void onCreate(@androidx.annotation.Nullable Bundle savedInstanceState) {
@@ -64,23 +77,28 @@ public class AmapSportRecordActivity extends AppCompatActivity implements View.O
 
         initViews();
 
-        querySaveSport(currDay);
+        sportType = getIntent().getIntExtra("sportType",-1);
+
+
+        recordSportTitleTv.setText(typeStr[sportType+1]);
+
+        querySaveSport(sportType);
 
 
     }
 
     private void initViews() {
+
+        recordTitleBackImg = findViewById(R.id.recordTitleBackImg);
+        recordSportTitleTv = findViewById(R.id.recordSportTitleTv);
+
         emptyTv = findViewById(R.id.emptyTv);
 
         titleBarLayout = findViewById(R.id.amapRecordTb);
         recordRecyclerView = findViewById(R.id.amapRecordRecyclerView);
-        dateTv = findViewById(R.id.itemDateTitleTv);
-        leftImg = findViewById(R.id.itemDateLeftImg);
-        rightImg = findViewById(R.id.itemDateRightImg);
 
-        leftImg.setOnClickListener(this);
-        rightImg.setOnClickListener(this);
-
+        recordTitleBackImg.setOnClickListener(this);
+        recordSportTitleTv.setOnClickListener(this);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -125,8 +143,8 @@ public class AmapSportRecordActivity extends AppCompatActivity implements View.O
 
 
 
-    private void querySaveSport(String dayStr){
-        dateTv.setText(dayStr);
+    private void querySaveSport(int  type){
+        resultList.clear();
         list.clear();
         try {
             LoginBean loginBean = Hawk.get(Config.database.USER_INFO);
@@ -140,7 +158,7 @@ public class AmapSportRecordActivity extends AppCompatActivity implements View.O
                 showEmpty();
                 return;
             }
-            List<AmapSportBean> sportBeanList = DbManager.getDbManager().queryAmapSportDataByMonth(userId, "2021-09");
+            List<AmapSportBean> sportBeanList = DbManager.getDbManager().queryByType(userId,type);
             Log.e(TAG,"-------记录查询="+new Gson().toJson(sportBeanList));
             if(sportBeanList == null){
                 showEmpty();
@@ -163,93 +181,75 @@ public class AmapSportRecordActivity extends AppCompatActivity implements View.O
 
 
     private void analyseData(List<AmapSportBean> sportLt){
-        HashMap<String,Object> monthMap = new HashMap<>();
-        resultList.clear();
+        try {
+            HashMap<String,Object> monthMap = new HashMap<>();
+            resultList.clear();
 
-        double countDistance = 0;
-        double countCalories = 0;
+            double countDistance = 0;
+            double countCalories = 0;
 
-        List<AmapSportBean> itemList = new ArrayList<>();
-        String tmpMonth;
+            List<AmapSportBean> itemList = new ArrayList<>();
+            String tmpMonth;
 
-        Map<String,List<AmapSportBean>> rM = new HashMap<>();
-        for(AmapSportBean amapSportBean : sportLt){
+            Map<String,List<AmapSportBean>> rM = new HashMap<>();
+            for(AmapSportBean amapSportBean : sportLt){
 
-            String currMonth = amapSportBean.getYearMonth();
+                String currMonth = amapSportBean.getYearMonth();
 
-            itemList.add(amapSportBean);
+                itemList.add(amapSportBean);
 
-            rM.put(currMonth,itemList);
+                rM.put(currMonth,itemList);
 
 //            AmapRecordBean amapRecordBean = new AmapRecordBean();
 
-            //月份
-            String monthStr = amapSportBean.getYearMonth();
+                //月份
+                String monthStr = amapSportBean.getYearMonth();
 //            String currDistance = amapSportBean.getDistance();
 //            String currCalories = amapSportBean.getCalories();
 //
 //            amapRecordBean.setMonthStr(monthStr);
 
-            monthMap.put(monthStr,"1");
+                monthMap.put(monthStr,"1");
 
-//
-//            if(monthMap.containsKey(monthStr)){
-//                countCalories += Utils.add(countCalories,Double.parseDouble(currCalories));
-//                countDistance += Utils.add(countDistance,Double.parseDouble(currDistance));
-//                amapRecordBean.setDistanceCount(countDistance+"");
-//                amapRecordBean.setCaloriesCount(countCalories+"");
-//                itemList.add(amapSportBean);
-//            }else{
-//                itemList.clear();
-//                monthMap.put(monthStr,amapSportBean);
-//                countDistance += Utils.add(countDistance,Double.parseDouble(currCalories));
-//                countCalories += Utils.add(countCalories,Double.parseDouble(currCalories));
-//                amapRecordBean.setDistanceCount(countDistance+"");
-//                amapRecordBean.setCaloriesCount(countCalories+"");
-//                itemList.add(amapSportBean);
-//
-//            }
-//
-//            amapRecordBean.setList(itemList);
-//            resultList.add(amapRecordBean);
-
-        }
+            }
 
 //        amapRecordAdapter.notifyDataSetChanged();
 
-        List<String> dbList = new ArrayList<>();
+            List<String> dbList = new ArrayList<>();
 
-        for(Map.Entry<String,Object> m : monthMap.entrySet()){
-            dbList.add(m.getKey());
-        }
-
-
-        for(Map.Entry<String,List<AmapSportBean>> mm : rM.entrySet()){
-            String keyMonth = mm.getKey();
-            List<AmapSportBean> tmAL = mm.getValue();
-
-
-            for(AmapSportBean amapSportBean : tmAL){
-                String currDistance = amapSportBean.getDistance();
-                String currCalories = amapSportBean.getCalories();
-                countCalories  = Utils.add(countCalories,Double.parseDouble(currCalories));
-                countDistance = Utils.add(countDistance,Double.parseDouble(currDistance));
+            for(Map.Entry<String,Object> m : monthMap.entrySet()){
+                dbList.add(m.getKey());
             }
 
-            AmapRecordBean amapRecordBean = new AmapRecordBean();
-            amapRecordBean.setMonthStr(keyMonth);
-            amapRecordBean.setShow(false);
-            amapRecordBean.setDistanceCount(Utils.divi(countDistance,1000d,2)+"");
-            amapRecordBean.setCaloriesCount(countCalories+"");
-            amapRecordBean.setList(tmAL);
-            resultList.add(amapRecordBean);
+
+            for(Map.Entry<String,List<AmapSportBean>> mm : rM.entrySet()){
+                String keyMonth = mm.getKey();
+                List<AmapSportBean> tmAL = mm.getValue();
+
+
+                for(AmapSportBean amapSportBean : tmAL){
+                    String currDistance = amapSportBean.getDistance();
+                    String currCalories = amapSportBean.getCalories();
+                    countCalories  = Utils.add(countCalories,Double.parseDouble(currCalories));
+                    countDistance = Utils.add(countDistance,Double.parseDouble(currDistance));
+                }
+
+                AmapRecordBean amapRecordBean = new AmapRecordBean();
+                amapRecordBean.setMonthStr(keyMonth);
+                amapRecordBean.setShow(false);
+                amapRecordBean.setDistanceCount(Utils.divi(countDistance,1000d,2)+"");
+                amapRecordBean.setCaloriesCount(countCalories+"");
+                amapRecordBean.setList(tmAL);
+                amapRecordBean.setSportCount(tmAL.size());
+                resultList.add(amapRecordBean);
+            }
+
+
+            amapRecordAdapter.notifyDataSetChanged();
+            Log.e(TAG,"------转换="+new Gson().toJson(dbList));
+        }catch (Exception e){
+            e.printStackTrace();
         }
-
-
-        amapRecordAdapter.notifyDataSetChanged();
-        Log.e(TAG,"------转换="+new Gson().toJson(dbList));
-
-
 
     }
 
@@ -263,12 +263,11 @@ public class AmapSportRecordActivity extends AppCompatActivity implements View.O
 
     @Override
     public void onClick(View view) {
-        if(view.getId() == R.id.itemDateLeftImg){
-            changeDayData(true);
+        if(view.getId() == R.id.recordTitleBackImg){
+            finish();
         }
-
-        if(view.getId() == R.id.itemDateRightImg){
-            changeDayData(false);
+        if(view.getId() == R.id.recordSportTitleTv){    //标题点击
+            alertDialogTitle();
         }
     }
 
@@ -282,6 +281,28 @@ public class AmapSportRecordActivity extends AppCompatActivity implements View.O
             return;// 空数据,或者大于今天的数据就别切了
         }
         currDay = date;
-        querySaveSport(currDay);
+       // querySaveSport(currDay);
+    }
+
+
+
+    private void alertDialogTitle(){
+
+        alert = new AlertDialog.Builder(this)
+                .setItems(typeStr, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                        recordSportTitleTv.setText(typeStr[i]);
+                        sportType = i-1;
+                        querySaveSport(sportType);
+                    }
+                }).setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                    }
+                });
+        alert.create().show();
     }
 }

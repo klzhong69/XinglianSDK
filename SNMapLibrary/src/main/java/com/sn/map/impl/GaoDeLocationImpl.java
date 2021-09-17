@@ -31,6 +31,13 @@ public class GaoDeLocationImpl implements ILocation, AMapLocationListener {
         this.context = new WeakReference<>(context.getApplicationContext());
         this.minTime = minTime;
         this.minDistance = minDistance;
+
+        if (mLocationClient == null) {
+            //初始化定位
+            mLocationClient = new AMapLocationClient(context);
+
+            mLocationClient.setLocationListener(this);
+        }
     }
 
     @Override

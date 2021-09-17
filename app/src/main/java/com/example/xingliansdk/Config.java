@@ -58,6 +58,14 @@ public class Config {
 
         //用于保存运动类型，步行、跑步等
         public static final String AMAP_SPORT_TYPE = "map_sport_type";
+
+        //保存步行的总距离
+        public static final String WALK_DISTANCE_KEY = "walk_distance_type";
+        //保存跑步总距离
+        public static final String RUN_DISTANCE_KEY = "run_distance_type";
+        //保存骑行的总距离
+        public static final String BIKE_DISTANCE_KEY = "bike_distance_type";
+
     }
 
     public class eventBus {

@@ -524,8 +524,12 @@ public class RunningPresenterImpl extends BasePresenter<IRunningContract.IView> 
                     amapSportBean.setHeartArrayStr("");
                     Log.e(TAG,"-----保存cans="+new Gson().toJson(amapSportBean));
 
-                    DbManager.getDbManager().saveAmapSportData(amapSportBean);
-                    //Log.e(TAG,"---isSave="+isSave);
+                    boolean isSave = DbManager.getDbManager().saveAmapSportData(amapSportBean);
+                    //保存成功后查询下累计的里程
+                    if(isSave)
+                        DbManager.getDbManager().queryALlTotalDistance(userId);
+
+
 //                    AppNetReq.getApi().uploadTrack(builder.build())
 //                            .enqueue(new OnResponseListener<DefResponseBean>() {
 //                                @Override

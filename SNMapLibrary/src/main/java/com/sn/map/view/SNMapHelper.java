@@ -3,6 +3,7 @@ package com.sn.map.view;
 import android.app.Activity;
 import android.app.Application;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 import com.sn.map.bean.SNLocation;
@@ -13,6 +14,7 @@ import com.sn.map.interfaces.OnSportMessageListener;
 import com.sn.map.utils.LinearSmooth;
 
 import java.lang.ref.WeakReference;
+import java.util.Arrays;
 import java.util.LinkedList;
 
 /**
@@ -20,6 +22,8 @@ import java.util.LinkedList;
  */
 
 public abstract class SNMapHelper implements Application.ActivityLifecycleCallbacks {
+
+    private static final String TAG = "SNMapHelper";
 
     private static WeakReference<Application> app;
     private WeakReference<Activity> mLastActivity;
@@ -270,7 +274,9 @@ public abstract class SNMapHelper implements Application.ActivityLifecycleCallba
 
 
     private SNLocation convertLocation(SNLocation location) {
+       
         double[] latlng = onLocationConverter(location.getLatitude(), location.getLongitude());
+       // Log.e(TAG,"-----转换钱="+location.getLatitude()+" "+location.getLongitude()+"\n"+ Arrays.toString(latlng));
         //更新转换后的经纬度
         location.setLatitude(latlng[0]);
         location.setLongitude(latlng[1]);

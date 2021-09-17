@@ -74,7 +74,7 @@ public class SNGaoDeMap extends SNMapHelper {
         this.mMapView = mMapView;
         onActivityCreated(activity, savedInstanceState);
         geocoderSearch = new GeocodeSearch(activity);
-        lineWidth = activity.getResources().getDisplayMetrics().density * 12;
+        lineWidth = activity.getResources().getDisplayMetrics().density * 10;
         mEndMarkerIcon = createIcon(activity, R.drawable.ic_location);
         mBeginMarkerIcon = createIcon(activity, R.drawable.ic_location_begin);
 
@@ -432,7 +432,7 @@ public class SNGaoDeMap extends SNMapHelper {
         map.setMapType(AMap.MAP_TYPE_NORMAL);
 
         UiSettings uiSettings = map.getUiSettings();
-        uiSettings.setMyLocationButtonEnabled(true);//设置默认定位按钮是否显示，非必需设置。
+        uiSettings.setMyLocationButtonEnabled(false);//设置默认定位按钮是否显示，非必需设置。
         MyLocationStyle myLocationStyle = new MyLocationStyle();
         myLocationStyle.myLocationType(MyLocationStyle.LOCATION_TYPE_FOLLOW);
         map.setMyLocationStyle(myLocationStyle);

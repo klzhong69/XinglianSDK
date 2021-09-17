@@ -5,6 +5,7 @@ import android.os.Handler
 import android.os.Looper
 import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
+import com.example.db.DbManager
 import com.example.xingliansdk.Config.database.*
 import com.example.xingliansdk.Config.eventBus.HOME_HISTORICAL_BIG_DATA_WEEK
 import com.example.xingliansdk.R
@@ -300,6 +301,12 @@ class HomeFragment : BaseFragment<HomeViewModel>(), OnRefreshListener, View.OnCl
             userInfo.userConfig=it.userConfig
             userInfo.permission=it.permission
             Hawk.put(USER_INFO,userInfo)
+
+            //先查询一下汇总的运动数据
+            var amapSport = Hawk.get(com.example.xingliansdk.Config.database.WALK_DISTANCE_KEY,"0.0")
+            if(amapSport.equals("0.0"))
+                DbManager.getDbManager().queryALlTotalDistance(it.user.userId)
+
             ImgUtil.loadImage(activity,userInfo.user.headPortrait)
             mDeviceInformationBean=DeviceInformationBean(it.user.sex.toInt()
                 , it.user.age.toInt(), it.user.height.toInt(), it.user.weight.toDouble().toInt()

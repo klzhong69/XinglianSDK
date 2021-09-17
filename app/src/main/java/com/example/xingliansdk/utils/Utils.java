@@ -135,9 +135,34 @@ public class Utils {
     }
 
 
+    /**
+     * 格式化为HH:mm格式
+     * @param sourceTime 时间
+     * @return
+     */
     public static String formatCusTime(String sourceTime){
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA);
         SimpleDateFormat sdf2 = new SimpleDateFormat("HH:mm",Locale.CHINA);
+        Date dateTemp = null;
+        try {
+            dateTemp = sdf.parse(sourceTime);
+            assert dateTemp != null;
+            return sdf2.format(dateTemp);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return "";
+        }
+    }
+
+
+    /**
+     * 格式化为MM/dd格式
+     * @param sourceTime 时间，
+     * @return
+     */
+    public static String formatCusTimeForDay(String sourceTime){
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA);
+        SimpleDateFormat sdf2 = new SimpleDateFormat("MM/dd",Locale.CHINA);
         Date dateTemp = null;
         try {
             dateTemp = sdf.parse(sourceTime);

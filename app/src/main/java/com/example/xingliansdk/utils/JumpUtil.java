@@ -19,6 +19,7 @@ import com.example.xingliansdk.ui.device.BigDataIntervalActivity;
 import com.example.xingliansdk.ui.dial.CustomizeDialActivity;
 import com.example.xingliansdk.ui.dial.DialDetailsActivity;
 import com.example.xingliansdk.ui.dial.DialMarketActivity;
+import com.example.xingliansdk.ui.fragment.map.AmapSportRecordActivity;
 import com.example.xingliansdk.ui.fragment.map.RunningActivity;
 import com.example.xingliansdk.ui.login.ForgetPasswordActivity;
 import com.example.xingliansdk.ui.login.GoalActivity;
@@ -482,8 +483,12 @@ public class JumpUtil {
      * 运动记录
      */
     public static void startExerciseRecordActivity(Context context) {
-        context.startActivity(new Intent(context, ExerciseRecordActivity.class));
+        //context.startActivity(new Intent(context, ExerciseRecordActivity.class));
+
+        context.startActivity(new Intent(context, AmapSportRecordActivity.class).putExtra("sportType",-1));
     }
+
+
 
 
     /**

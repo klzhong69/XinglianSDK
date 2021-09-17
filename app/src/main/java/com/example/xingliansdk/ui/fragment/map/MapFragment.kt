@@ -15,6 +15,8 @@ import com.amap.api.location.AMapLocationListener
 import com.amap.api.maps.*
 import com.amap.api.maps.model.BitmapDescriptorFactory
 import com.amap.api.maps.model.MyLocationStyle
+import com.example.db.DbManager
+import com.example.xingliansdk.Config
 import com.example.xingliansdk.Config.eventBus.LOCATION_INFO
 import com.example.xingliansdk.R
 import com.example.xingliansdk.base.BaseFragment
@@ -22,6 +24,8 @@ import com.example.xingliansdk.base.viewmodel.BaseViewModel
 import com.example.xingliansdk.bean.MapMotionBean
 import com.example.xingliansdk.blecontent.BleConnection
 import com.example.xingliansdk.eventbus.SNEventBus
+import com.example.xingliansdk.network.api.login.LoginBean
+import com.example.xingliansdk.ui.fragment.map.view.RunningPresenterImpl
 import com.example.xingliansdk.utils.HelpUtil
 import com.example.xingliansdk.utils.JumpUtil
 import com.google.gson.Gson
@@ -34,6 +38,8 @@ import me.hgj.jetpackmvvm.ext.navigateAction
 
 class MapFragment : BaseFragment<BaseViewModel>(), View.OnClickListener, LocationSource,
     AMapLocationListener {
+
+    private val tags = "MapFragment"
 
     override fun layoutId(): Int = R.layout.fragment_movement_type
     lateinit var mStr: SpannableString
@@ -51,13 +57,15 @@ class MapFragment : BaseFragment<BaseViewModel>(), View.OnClickListener, Locatio
 
 
     override fun initView(savedInstanceState: Bundle?) {
+        Log.e(tag,"----111111-----")
+
         arguments?.let {
             mMapMotionBean = it.getParcelable("MapMotionBean")
+            Log.e(tags,"mMapMotionBean="+Gson().toJson(mMapMotionBean))
             mStr =
                 SpannableString(mMapMotionBean?.Distance?.let { it1 -> HelpUtil.getFormatter(it1) } + "公里")
 
 
-            homeSportTypeTv.text= "累计"+mMapMotionBean?.let { it1 -> typeSport(it1.type) } +"距离>"
 
         }
         mapView = view?.findViewById<View>(R.id.map) as TextureMapView
@@ -72,11 +80,19 @@ class MapFragment : BaseFragment<BaseViewModel>(), View.OnClickListener, Locatio
         tvDistance.text = mStr
         tvGo.setOnClickListener(this)
         tvGoal.setOnClickListener(this)
+        homeSportLayout.setOnClickListener(this)
         tvDistance.setOnClickListener(this)
 
 
         tvGo.setOnLongClickListener {
-            startActivity(Intent(context, AmapSportRecordActivity::class.java))
+           //startActivity(Intent(context, AmapSportRecordActivity::class.java))
+
+            //保存数据到数据库中
+
+            //先判断是否有用户id,无用户id不保存   var userInfo = Hawk.get<LoginBean>(Config.database.USER_INFO)
+            val loginBean = Hawk.get<LoginBean>(Config.database.USER_INFO)
+            val userId = loginBean!!.user.userId
+            DbManager.getDbManager().queryALlTotalDistance(userId)
             true
         }
     }
@@ -115,6 +131,16 @@ class MapFragment : BaseFragment<BaseViewModel>(), View.OnClickListener, Locatio
             R.id.tvGoal -> {
                 TLog.error("头大的点击事件")
                 nav().navigateAction(R.id.action_MapFragment_to_GoalFragment)
+            }
+
+
+            //到记录中去
+            R.id.homeSportLayout->{
+//                startActivity(Intent(context,AmapSportRecordActivity::class.java))
+
+               val intent = Intent(context,AmapSportRecordActivity::class.java)
+                mMapMotionBean?.let { intent.putExtra("sportType", it.type) }
+                startActivity(intent)
             }
         }
     }
@@ -170,6 +196,12 @@ class MapFragment : BaseFragment<BaseViewModel>(), View.OnClickListener, Locatio
         super.onResume()
         mapView?.onResume()
         TLog.error("回来触发 onResume")
+        Log.e(tags,"-----mMapMotionBean="+Gson().toJson(mMapMotionBean))
+
+        //文字显示
+        homeSportTypeTv.text= "累计"+mMapMotionBean?.let { it1 -> typeSport(it1.type) } +"距离>"
+        //累计里程
+        homeSportCountTv.text = mMapMotionBean?.let { it1 -> typeSportDistance(it1.type) }
     }
 
     override fun onPause() {
@@ -214,9 +246,16 @@ class MapFragment : BaseFragment<BaseViewModel>(), View.OnClickListener, Locatio
 
 
     private fun typeSport(type: Int): String? {
-        if (type == 1) return "步行"
-        if (type == 2) return "跑步"
-        return if (type == 3) "骑行" else "跑步"
+        if (type == 0) return "步行"
+        if (type == 1) return "跑步"
+        return if (type == 2) "骑行" else "跑步"
+    }
+
+    //查询下保存的累计数据
+    private fun typeSportDistance(type : Int):String?{
+        if(type == 0) return Hawk.get(Config.database.WALK_DISTANCE_KEY,"0.0")
+        if(type == 1) return Hawk.get(Config.database.RUN_DISTANCE_KEY,"0.0")
+        return if(type == 2) Hawk.get(Config.database.BIKE_DISTANCE_KEY,"0.0") else Hawk.get(Config.database.WALK_DISTANCE_KEY,"0.0")
     }
 
 }

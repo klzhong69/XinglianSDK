@@ -1,5 +1,6 @@
 package com.example.xingliansdk.ui.fragment.map;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -43,7 +44,7 @@ public class AmapItemDetailAdapter extends RecyclerView.Adapter<AmapItemDetailAd
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ItemDetailViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ItemDetailViewHolder holder, @SuppressLint("RecyclerView") int position) {
         AmapSportBean amapSportBean = list.get(position);
         try {
             int sportType = amapSportBean.getSportType();
@@ -51,7 +52,8 @@ public class AmapItemDetailAdapter extends RecyclerView.Adapter<AmapItemDetailAd
             holder.distanceTv.setText(decimalFormat.format(Float.valueOf(amapSportBean.getDistance())/1000)+"公里");
             holder.durationTv.setText(amapSportBean.getCurrentSportTime());
             holder.caloriesTv.setText(amapSportBean.getCalories()+"千卡");
-            holder.currTimeTv.setText(Utils.formatCusTime(amapSportBean.getEndSportTime()));
+            String mapTime = amapSportBean.getEndSportTime();
+            holder.currTimeTv.setText(Utils.formatCusTimeForDay(mapTime)+"\n"+Utils.formatCusTime(mapTime));
 
 
             holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -95,11 +97,11 @@ public class AmapItemDetailAdapter extends RecyclerView.Adapter<AmapItemDetailAd
     }
 
     private int mapSportTypeImg(int type){
-        if(type == 1)  //步行
+        if(type == 0)  //步行
             return R.mipmap.icon_walk;
-        if(type == 2)
+        if(type == 1)
             return R.mipmap.icon_run;
-        if(type == 3)
+        if(type == 2)
             return R.mipmap.icon_ride;
         return R.mipmap.icon_walk;
     }

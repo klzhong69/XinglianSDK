@@ -154,7 +154,7 @@ public class AmapHistorySportActivity extends AppCompatActivity implements Locat
             //开始和结束的位置标记
             LatLng startLng = latLngList.get(0);
 
-            aMap.moveCamera(CameraUpdateFactory.newLatLngZoom(startLng, 18));
+
 
             MarkerOptions markerOptions = new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(typeSportImg(amapSportBean.getSportType())))
                     .position(startLng)
@@ -162,8 +162,10 @@ public class AmapHistorySportActivity extends AppCompatActivity implements Locat
             startMark = aMap.addMarker(markerOptions);
             startMark.setDraggable(false);
 
-
+            //结束的位置
             LatLng endLng = latLngList.get(latLngList.size() - 1);
+            aMap.moveCamera(CameraUpdateFactory.newLatLngZoom(endLng, 15));
+
             MarkerOptions markerOption = new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.mipmap.icon_amap_sport_end))
                     .position(endLng)
                     .draggable(false);
@@ -357,8 +359,10 @@ public class AmapHistorySportActivity extends AppCompatActivity implements Locat
         aMap.setMyLocationStyle(myLocationStyle);
         aMap.setLocationSource(this);// 设置定位监听
         aMap.getUiSettings().setZoomControlsEnabled(false);
-        aMap.getUiSettings().setMyLocationButtonEnabled(true);// 设置默认定位按钮是否显示
+        aMap.getUiSettings().setMyLocationButtonEnabled(false);// 设置默认定位按钮是否显示
         aMap.setMyLocationEnabled(true);// 设置为true表示显示定位层并可触发定位，false表示隐藏定位层并不可触发定位，默认是false
+
+
     }
 
 
@@ -391,7 +395,7 @@ public class AmapHistorySportActivity extends AppCompatActivity implements Locat
         if (mListener != null && aMapLocation != null) {
             mListener.onLocationChanged(aMapLocation);
             LatLng latLng = new LatLng(aMapLocation.getLatitude(), aMapLocation.getLongitude());
-            aMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 18));
+           // aMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 18));
         }
     }
 
@@ -415,7 +419,7 @@ public class AmapHistorySportActivity extends AppCompatActivity implements Locat
             // 在定位结束后，在合适的生命周期调用onDestroy()方法
             // 在单次定位情况下，定位无论成功与否，都无需调用stopLocation()方法移除请求，定位sdk内部会移除
             //mlocationClient.stopLocation();
-            mlocationClient.startLocation();
+            //mlocationClient.startLocation();
         }
     }
 

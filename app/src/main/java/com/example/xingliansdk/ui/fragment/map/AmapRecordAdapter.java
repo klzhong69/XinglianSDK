@@ -19,9 +19,12 @@ import com.example.xingliansdk.R;
 import com.example.xingliansdk.utils.Utils;
 
 import java.text.DecimalFormat;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
+ * 运动记录adapter
  * Created by Admin
  * Date 2021/9/12
  */
@@ -63,7 +66,14 @@ public class AmapRecordAdapter extends RecyclerView.Adapter<AmapRecordAdapter.Am
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext);
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         holder.itemDetailRv.setLayoutManager(linearLayoutManager);
-        AmapItemDetailAdapter amapItemDetailAdapter = new AmapItemDetailAdapter(amapRecordBean.getList(),mContext);
+        List<AmapSportBean> amList = amapRecordBean.getList();
+        Collections.sort(amList, new Comparator<AmapSportBean>() {
+            @Override
+            public int compare(AmapSportBean amapSportBean, AmapSportBean t1) {
+                return t1.getEndSportTime().compareTo(amapSportBean.getEndSportTime());
+            }
+        });
+        AmapItemDetailAdapter amapItemDetailAdapter = new AmapItemDetailAdapter(amList,mContext);
         holder.itemDetailRv.setAdapter(amapItemDetailAdapter);
 
 
@@ -79,6 +89,11 @@ public class AmapRecordAdapter extends RecyclerView.Adapter<AmapRecordAdapter.Am
             @Override
             public void onClick(View view) {
                 amapRecordBean.setShow(!amapRecordBean.isShow());
+                if(amapRecordBean.isShow()){
+                    statusImg.setRotation(270f);
+                }else{
+                    statusImg.setRotation(90f);
+                }
                 notifyDataSetChanged();
             }
         });

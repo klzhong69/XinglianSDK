@@ -462,6 +462,7 @@ class RunningActivity : BaseActivity<MainViewModel>(), View.OnClickListener, IRu
             R.id.tvTest -> {
                 mPresenter?.requestMapFirstLocation()
             }
+
         }
     }
 
@@ -518,6 +519,8 @@ class RunningActivity : BaseActivity<MainViewModel>(), View.OnClickListener, IRu
     private fun initMap(savedInstanceState: Bundle?) {
         TLog.error("savedInstanceState$savedInstanceState")
         val iLocation = GpsLocationImpl(this, 1000, 10)
+
+       // val iLocation = GaoDeLocationImpl(this,2 * 1000,1);
 //        val iLocation = GaoDeLocationImpl(this,2 * 1000,5);
 //        TLog.error("iLocation+="+iLocation.lastLocation.latitude)
 //        TLog.error("iLocation+="+iLocation.lastLocation.longitude)
