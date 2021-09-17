@@ -18,8 +18,6 @@
 
 
 
-
-
     <include
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -216,6 +214,7 @@
                 android:id="@+id/statusAmapOperateLayout"
                 app:layout_constraintTop_toBottomOf="@+id/view_1"
                 android:layout_width="match_parent"
+                android:visibility="gone"
                 android:layout_height="wrap_content">
 
 

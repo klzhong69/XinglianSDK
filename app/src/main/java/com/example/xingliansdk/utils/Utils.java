@@ -1,6 +1,7 @@
 package com.example.xingliansdk.utils;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -42,6 +43,20 @@ public class Utils {
 
     }
 
+
+
+    /**
+     * 两个double相除，保留小数
+     * @param d1 被除数
+     * @param d2 除数
+     * @param point 保留几位小数
+     * @return
+     */
+    public static double divi(double d1,double d2,int point){
+        BigDecimal b1 = new BigDecimal(d1);
+        BigDecimal b2 = new BigDecimal(d2);
+        return b1.divide(b2,point, BigDecimal.ROUND_HALF_UP).doubleValue();
+    }
 
 
     /**

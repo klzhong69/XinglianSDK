@@ -214,6 +214,8 @@ public class RunningPresenterImpl extends BasePresenter<IRunningContract.IView> 
 
     private void saveSportData() {
         LinkedList<SNLocation> locations = mMapHelper.getLocations();
+        if(locations == null || locations.isEmpty())
+            return;
 //        if (locations.size() <= 1) {
 //            onCallSaveSportDataStatusChange(CODE_COUNT_LITTLE);
 //            return;

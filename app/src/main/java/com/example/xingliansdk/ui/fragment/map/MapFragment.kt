@@ -15,7 +15,6 @@ import com.amap.api.location.AMapLocationListener
 import com.amap.api.maps.*
 import com.amap.api.maps.model.BitmapDescriptorFactory
 import com.amap.api.maps.model.MyLocationStyle
-import com.example.TestOnActivity
 import com.example.xingliansdk.Config.eventBus.LOCATION_INFO
 import com.example.xingliansdk.R
 import com.example.xingliansdk.base.BaseFragment
@@ -23,13 +22,11 @@ import com.example.xingliansdk.base.viewmodel.BaseViewModel
 import com.example.xingliansdk.bean.MapMotionBean
 import com.example.xingliansdk.blecontent.BleConnection
 import com.example.xingliansdk.eventbus.SNEventBus
-import com.example.xingliansdk.livedata.LiveDataBus
 import com.example.xingliansdk.utils.HelpUtil
 import com.example.xingliansdk.utils.JumpUtil
-import com.shon.connector.utils.TLog
 import com.google.gson.Gson
 import com.orhanobut.hawk.Hawk
-import com.shon.connector.Config
+import com.shon.connector.utils.TLog
 import kotlinx.android.synthetic.main.fragment_movement_type.*
 import me.hgj.jetpackmvvm.ext.nav
 import me.hgj.jetpackmvvm.ext.navigateAction
@@ -48,16 +45,24 @@ class MapFragment : BaseFragment<BaseViewModel>(), View.OnClickListener, Locatio
     private var mlocationClient: AMapLocationClient? = null
     private var mLocationOption: AMapLocationClientOption? = null
     private lateinit var myLocationStyle: MyLocationStyle
-    private var tempStatus=false
+    private var tempStatus = false
+
+
+
+
     override fun initView(savedInstanceState: Bundle?) {
         arguments?.let {
             mMapMotionBean = it.getParcelable("MapMotionBean")
             mStr =
                 SpannableString(mMapMotionBean?.Distance?.let { it1 -> HelpUtil.getFormatter(it1) } + "公里")
+
+
+            homeSportTypeTv.text= "累计"+mMapMotionBean?.let { it1 -> typeSport(it1.type) } +"距离>"
+
         }
         mapView = view?.findViewById<View>(R.id.map) as TextureMapView
         mapView!!.onCreate(savedInstanceState)
-        init()
+        //init()
         mStr.setSpan(
             AbsoluteSizeSpan(20, true),
             mStr.length - 2,
@@ -71,7 +76,7 @@ class MapFragment : BaseFragment<BaseViewModel>(), View.OnClickListener, Locatio
 
 
         tvGo.setOnLongClickListener {
-           startActivity(Intent(context,AmapSportRecordActivity::class.java))
+            startActivity(Intent(context, AmapSportRecordActivity::class.java))
             true
         }
     }
@@ -84,6 +89,7 @@ class MapFragment : BaseFragment<BaseViewModel>(), View.OnClickListener, Locatio
         super.onSaveInstanceState(outState)
         mapView?.onSaveInstanceState(outState)
     }
+
     companion object {
         fun newInstance(cid: Int, mDistance: MapMotionBean): MapFragment {
             val args = Bundle()
@@ -99,7 +105,7 @@ class MapFragment : BaseFragment<BaseViewModel>(), View.OnClickListener, Locatio
         when (v.id) {
             R.id.tvGo -> {
                 TLog.error("点击+=${Gson().toJson(mMapMotionBean)}")
-                 JumpUtil.startLocationMap(activity, mMapMotionBean)
+                JumpUtil.startLocationMap(activity, mMapMotionBean)
 
 
 //                    startActivity(Intent(context, TestOnActivity::class.java))
@@ -189,10 +195,13 @@ class MapFragment : BaseFragment<BaseViewModel>(), View.OnClickListener, Locatio
 //                amapLocation.city
 
                 //发送位置信息
-                Hawk.put("city",amapLocation.district)
-                if(BleConnection.iFonConnectError && !tempStatus) {
-                    tempStatus=true
-                    SNEventBus.sendEvent(LOCATION_INFO, "${amapLocation.longitude},${amapLocation.latitude}")
+                Hawk.put("city", amapLocation.district)
+                if (BleConnection.iFonConnectError && !tempStatus) {
+                    tempStatus = true
+                    SNEventBus.sendEvent(
+                        LOCATION_INFO,
+                        "${amapLocation.longitude},${amapLocation.latitude}"
+                    )
                 }
             } else {
                 val errText =
@@ -203,5 +212,11 @@ class MapFragment : BaseFragment<BaseViewModel>(), View.OnClickListener, Locatio
 
     }
 
+
+    private fun typeSport(type: Int): String? {
+        if (type == 1) return "步行"
+        if (type == 2) return "跑步"
+        return if (type == 3) "骑行" else "跑步"
+    }
 
 }

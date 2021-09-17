@@ -94,16 +94,17 @@ class RunningActivity : BaseActivity<MainViewModel>(), View.OnClickListener, IRu
         constMap.visibility=View.GONE
         amapRunnLayout.visibility = View.GONE
         //GPS显示
-        llRunningGPS.visibility = View.GONE
+        llRunningGPS.visibility = View.VISIBLE
 
+        statusAmapOperateLayout.visibility = View.GONE
 
         CountTimerUtil.start(tvNumberAnim, object : CountTimerUtil.AnimationState {
             override fun start() {
             }
 
             override fun end() {
-                // constMap.visibility = View.VISIBLE
-                amapRunnLayout.visibility = View.VISIBLE
+                 constMap.visibility = View.VISIBLE
+
                 //initMap(savedInstanceState)
 
 
@@ -191,19 +192,19 @@ class RunningActivity : BaseActivity<MainViewModel>(), View.OnClickListener, IRu
 
         //地图模式返回
         amapBackLayout.setOnClickListener {
-            constMap.visibility = View.GONE
-            amapRunnLayout.visibility = View.VISIBLE
-            amapBackLayout.visibility = View.GONE
-            llRunningGPS.visibility = View.GONE
-
-            //判断是否是暂停状态
-            if(isStopStatus){
-                amapDestoryPressView.visibility = View.GONE
-                amapStatusDoubleLayout.visibility = View.VISIBLE
-            }else{
-                amapDestoryPressView.visibility = View.VISIBLE
-                amapStatusDoubleLayout.visibility = View.GONE
-            }
+//            constMap.visibility = View.GONE
+//            amapRunnLayout.visibility = View.VISIBLE
+//            amapBackLayout.visibility = View.GONE
+//            llRunningGPS.visibility = View.GONE
+//
+//            //判断是否是暂停状态
+//            if(isStopStatus){
+//                amapDestoryPressView.visibility = View.GONE
+//                amapStatusDoubleLayout.visibility = View.VISIBLE
+//            }else{
+//                amapDestoryPressView.visibility = View.VISIBLE
+//                amapStatusDoubleLayout.visibility = View.GONE
+//            }
 
         }
 

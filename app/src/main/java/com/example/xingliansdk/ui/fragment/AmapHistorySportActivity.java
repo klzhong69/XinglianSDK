@@ -2,12 +2,14 @@ package com.example.xingliansdk.ui.fragment;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.widget.NestedScrollView;
 
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -30,6 +32,7 @@ import com.amap.api.maps.model.MarkerOptions;
 import com.amap.api.maps.model.MyLocationStyle;
 import com.amap.api.maps.model.Polyline;
 import com.amap.api.maps.model.PolylineOptions;
+import com.amap.api.maps.utils.overlay.SmoothMoveMarker;
 import com.amap.api.trace.LBSTraceClient;
 import com.amap.api.trace.TraceListener;
 import com.amap.api.trace.TraceLocation;
@@ -48,8 +51,9 @@ import java.util.concurrent.ConcurrentMap;
 
 
 /**
+ * 显示运动轨迹页面
  * Created by Admin
- * Date 2019/10/18
+ *
  */
 public class AmapHistorySportActivity extends AppCompatActivity implements LocationSource,
         AMapLocationListener, TraceListener {
@@ -152,22 +156,35 @@ public class AmapHistorySportActivity extends AppCompatActivity implements Locat
 
             aMap.moveCamera(CameraUpdateFactory.newLatLngZoom(startLng, 18));
 
-            MarkerOptions markerOptions = new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.mipmap.start))
+            MarkerOptions markerOptions = new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(typeSportImg(amapSportBean.getSportType())))
                     .position(startLng)
-                    .draggable(true);
+                    .draggable(false);
             startMark = aMap.addMarker(markerOptions);
             startMark.setDraggable(false);
 
 
             LatLng endLng = latLngList.get(latLngList.size() - 1);
-            MarkerOptions markerOption = new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.mipmap.end))
+            MarkerOptions markerOption = new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.mipmap.icon_amap_sport_end))
                     .position(endLng)
-                    .draggable(true);
+                    .draggable(false);
             endMark = aMap.addMarker(markerOption);
             endMark.setDraggable(false);
-            polyline = aMap.addPolyline(new PolylineOptions().addAll(latLngList).color(Color.GREEN).width(8f));
+            polyline = aMap.addPolyline(new PolylineOptions().addAll(latLngList).color(Color.parseColor("#00FF01")).width(18f));
 
 
+            SmoothMoveMarker smoothMoveMarker = new SmoothMoveMarker(aMap);
+            smoothMoveMarker.setDescriptor(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(),R.mipmap.gps_point)));
+
+            smoothMoveMarker.setPoints(latLngList);
+            smoothMoveMarker.setTotalDuration(3);
+            smoothMoveMarker.startSmoothMove();
+
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    smoothMoveMarker.setVisible(false);
+                }
+            }, 3* 1000);
 
         }catch (Exception e){
             e.printStackTrace();
@@ -460,6 +477,16 @@ public class AmapHistorySportActivity extends AppCompatActivity implements Locat
         if(type == 3)
             return "骑行";
         return "跑步";
+    }
+
+    private int typeSportImg(int type){
+        if(type == 1)
+            return R.mipmap.icon_amap_walk;
+        if(type == 2)
+            return R.mipmap.icon_amap_run;
+        if(type == 3)
+            return R.mipmap.icon_amap_ride;
+        return R.mipmap.icon_amap_walk;
     }
 
 }

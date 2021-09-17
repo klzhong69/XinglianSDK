@@ -5,13 +5,13 @@
     android:layout_height="wrap_content"
     android:layout_margin="5dp"
     android:background="@drawable/comm_shap_layout"
-    android:orientation="vertical"
-    android:padding="5dp">
+    android:orientation="vertical">
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/itemRecyclerMonthLayout"
         android:layout_width="match_parent"
+        android:background="@drawable/comm_shap_layout"
         android:layout_height="wrap_content">
 
         <TextView
@@ -46,7 +46,6 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
             android:orientation="horizontal"
             android:padding="5dp">
 
@@ -64,7 +63,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="5dp"
-                    android:text="步行/公里"
+                    android:text="距离(公里)"
                     android:textSize="17sp" />
 
 
@@ -80,11 +79,11 @@
             </LinearLayout>
 
             <View
-                android:layout_width="1dp"
+                android:layout_width="0.7dp"
                 android:layout_height="match_parent"
                 android:layout_marginTop="5dp"
                 android:layout_marginBottom="5dp"
-                android:background="@color/text_bg_gray" />
+                android:background="#D8D8D8" />
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -99,7 +98,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="5dp"
-                    android:text="跑步/公里"
+                    android:text="热量(千卡)"
                     android:textSize="17sp" />
 
 
@@ -115,11 +114,11 @@
             </LinearLayout>
 
             <View
-                android:layout_width="1dp"
+                android:layout_width="0.7dp"
                 android:layout_height="match_parent"
                 android:layout_marginTop="5dp"
                 android:layout_marginBottom="5dp"
-                android:background="@color/text_bg_gray" />
+                android:background="#D8D8D8" />
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -134,7 +133,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="5dp"
-                    android:text="骑行/公里"
+                    android:text="次数"
                     android:textSize="17sp" />
 
 
@@ -156,8 +155,7 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/itemRecordMonthRecyclerView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp" />
+            android:layout_height="wrap_content" />
     </LinearLayout>
 
 

@@ -51,6 +51,17 @@ public class DbManager {
         }
     }
 
+    //根据月份查询
+    public List<AmapSportBean> queryAmapSportDataByMonth(String userId,String monthDay){
+        try {
+            String whereStr = "userId = ? and yearMonth = ?";
+            List<AmapSportBean> sportBeanList = LitePal.where(whereStr,userId,monthDay).find(AmapSportBean.class);
+            return sportBeanList == null || sportBeanList.isEmpty() ? null : sportBeanList;
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
 
 
 }

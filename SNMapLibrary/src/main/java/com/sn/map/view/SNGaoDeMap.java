@@ -27,6 +27,7 @@ import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.LatLngBounds;
 import com.amap.api.maps.model.Marker;
 import com.amap.api.maps.model.MarkerOptions;
+import com.amap.api.maps.model.MyLocationStyle;
 import com.amap.api.maps.model.Polyline;
 import com.amap.api.maps.model.PolylineOptions;
 import com.amap.api.services.core.LatLonPoint;
@@ -73,7 +74,7 @@ public class SNGaoDeMap extends SNMapHelper {
         this.mMapView = mMapView;
         onActivityCreated(activity, savedInstanceState);
         geocoderSearch = new GeocodeSearch(activity);
-        lineWidth = activity.getResources().getDisplayMetrics().density * 10;
+        lineWidth = activity.getResources().getDisplayMetrics().density * 12;
         mEndMarkerIcon = createIcon(activity, R.drawable.ic_location);
         mBeginMarkerIcon = createIcon(activity, R.drawable.ic_location_begin);
 
@@ -374,7 +375,7 @@ public class SNGaoDeMap extends SNMapHelper {
         if (isTouchMap) {
             return;
         }
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 15);
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 18);
         if (animation) {
             map.animateCamera(cameraUpdate);// 有动画
         } else {
@@ -428,10 +429,13 @@ public class SNGaoDeMap extends SNMapHelper {
             activity.finish();
             return;
         }
-        map.setMapType(AMap.MAP_TYPE_NIGHT);
+        map.setMapType(AMap.MAP_TYPE_NORMAL);
 
         UiSettings uiSettings = map.getUiSettings();
-        uiSettings.setMyLocationButtonEnabled(false);//设置默认定位按钮是否显示，非必需设置。
+        uiSettings.setMyLocationButtonEnabled(true);//设置默认定位按钮是否显示，非必需设置。
+        MyLocationStyle myLocationStyle = new MyLocationStyle();
+        myLocationStyle.myLocationType(MyLocationStyle.LOCATION_TYPE_FOLLOW);
+        map.setMyLocationStyle(myLocationStyle);
         uiSettings.setScaleControlsEnabled(false);
         uiSettings.setZoomControlsEnabled(false);
         map.setOnCameraChangeListener(new AMap.OnCameraChangeListener() {

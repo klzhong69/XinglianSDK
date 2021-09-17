@@ -30,6 +30,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 地图运动记录
@@ -52,6 +53,9 @@ public class AmapSportRecordActivity extends AppCompatActivity implements View.O
     private ImageView leftImg,rightImg;
 
     private String currDay = Utils.getCurrentDate();
+
+
+    private List<AmapRecordBean> resultList = new ArrayList<>();
 
     @Override
     protected void onCreate(@androidx.annotation.Nullable Bundle savedInstanceState) {
@@ -83,8 +87,8 @@ public class AmapSportRecordActivity extends AppCompatActivity implements View.O
         recordRecyclerView.setLayoutManager(linearLayoutManager);
 
         list = new ArrayList<>();
-//        amapRecordAdapter = new AmapRecordAdapter(list,this);
-//        recordRecyclerView.setAdapter(amapRecordAdapter);
+        amapRecordAdapter = new AmapRecordAdapter(resultList,this);
+        recordRecyclerView.setAdapter(amapRecordAdapter);
 
         titleBarLayout.setTitleBarListener(new TitleBarLayout.TitleBarListener() {
             @Override
@@ -136,7 +140,7 @@ public class AmapSportRecordActivity extends AppCompatActivity implements View.O
                 showEmpty();
                 return;
             }
-            List<AmapSportBean> sportBeanList = DbManager.getDbManager().queryAmapSportData(userId, dayStr);
+            List<AmapSportBean> sportBeanList = DbManager.getDbManager().queryAmapSportDataByMonth(userId, "2021-09");
             Log.e(TAG,"-------记录查询="+new Gson().toJson(sportBeanList));
             if(sportBeanList == null){
                 showEmpty();
@@ -156,7 +160,7 @@ public class AmapSportRecordActivity extends AppCompatActivity implements View.O
     }
 
 
-    private List<AmapRecordBean> resultList = new ArrayList<>();
+
 
     private void analyseData(List<AmapSportBean> sportLt){
         HashMap<String,Object> monthMap = new HashMap<>();
@@ -166,42 +170,87 @@ public class AmapSportRecordActivity extends AppCompatActivity implements View.O
         double countCalories = 0;
 
         List<AmapSportBean> itemList = new ArrayList<>();
+        String tmpMonth;
 
+        Map<String,List<AmapSportBean>> rM = new HashMap<>();
         for(AmapSportBean amapSportBean : sportLt){
 
-            AmapRecordBean amapRecordBean = new AmapRecordBean();
+            String currMonth = amapSportBean.getYearMonth();
+
+            itemList.add(amapSportBean);
+
+            rM.put(currMonth,itemList);
+
+//            AmapRecordBean amapRecordBean = new AmapRecordBean();
 
             //月份
             String monthStr = amapSportBean.getYearMonth();
-            String currDistance = amapSportBean.getDistance();
-            String currCalories = amapSportBean.getCalories();
+//            String currDistance = amapSportBean.getDistance();
+//            String currCalories = amapSportBean.getCalories();
+//
+//            amapRecordBean.setMonthStr(monthStr);
 
-            amapRecordBean.setMonthStr(monthStr);
+            monthMap.put(monthStr,"1");
 
-            if(monthMap.containsKey(monthStr)){
-                countCalories = Utils.add(countCalories,Double.parseDouble(currCalories));
-                countDistance = Utils.add(countDistance,Double.parseDouble(currDistance));
-                amapRecordBean.setDistanceCount(countDistance+"");
-                amapRecordBean.setCaloriesCount(countCalories+"");
-                itemList.add(amapSportBean);
-            }else{
-                itemList.clear();
-                monthMap.put(monthStr,amapSportBean);
-                countDistance = Utils.add(countDistance,Double.parseDouble(currCalories));
-                countCalories = Utils.add(countCalories,Double.parseDouble(currCalories));
-                amapRecordBean.setDistanceCount(countDistance+"");
-                amapRecordBean.setCaloriesCount(countCalories+"");
-                itemList.add(amapSportBean);
-
-            }
-
-            amapRecordBean.setList(itemList);
-            resultList.add(amapRecordBean);
+//
+//            if(monthMap.containsKey(monthStr)){
+//                countCalories += Utils.add(countCalories,Double.parseDouble(currCalories));
+//                countDistance += Utils.add(countDistance,Double.parseDouble(currDistance));
+//                amapRecordBean.setDistanceCount(countDistance+"");
+//                amapRecordBean.setCaloriesCount(countCalories+"");
+//                itemList.add(amapSportBean);
+//            }else{
+//                itemList.clear();
+//                monthMap.put(monthStr,amapSportBean);
+//                countDistance += Utils.add(countDistance,Double.parseDouble(currCalories));
+//                countCalories += Utils.add(countCalories,Double.parseDouble(currCalories));
+//                amapRecordBean.setDistanceCount(countDistance+"");
+//                amapRecordBean.setCaloriesCount(countCalories+"");
+//                itemList.add(amapSportBean);
+//
+//            }
+//
+//            amapRecordBean.setList(itemList);
+//            resultList.add(amapRecordBean);
 
         }
 
+//        amapRecordAdapter.notifyDataSetChanged();
 
-        Log.e(TAG,"------转换="+new Gson().toJson(resultList));
+        List<String> dbList = new ArrayList<>();
+
+        for(Map.Entry<String,Object> m : monthMap.entrySet()){
+            dbList.add(m.getKey());
+        }
+
+
+        for(Map.Entry<String,List<AmapSportBean>> mm : rM.entrySet()){
+            String keyMonth = mm.getKey();
+            List<AmapSportBean> tmAL = mm.getValue();
+
+
+            for(AmapSportBean amapSportBean : tmAL){
+                String currDistance = amapSportBean.getDistance();
+                String currCalories = amapSportBean.getCalories();
+                countCalories  = Utils.add(countCalories,Double.parseDouble(currCalories));
+                countDistance = Utils.add(countDistance,Double.parseDouble(currDistance));
+            }
+
+            AmapRecordBean amapRecordBean = new AmapRecordBean();
+            amapRecordBean.setMonthStr(keyMonth);
+            amapRecordBean.setShow(false);
+            amapRecordBean.setDistanceCount(Utils.divi(countDistance,1000d,2)+"");
+            amapRecordBean.setCaloriesCount(countCalories+"");
+            amapRecordBean.setList(tmAL);
+            resultList.add(amapRecordBean);
+        }
+
+
+        amapRecordAdapter.notifyDataSetChanged();
+        Log.e(TAG,"------转换="+new Gson().toJson(dbList));
+
+
+
     }
 
 

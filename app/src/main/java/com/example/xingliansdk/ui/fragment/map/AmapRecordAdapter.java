@@ -10,8 +10,10 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.db.AmapRecordBean;
 import com.example.db.AmapSportBean;
 import com.example.xingliansdk.R;
 import com.example.xingliansdk.utils.Utils;
@@ -26,7 +28,7 @@ import java.util.List;
 public class AmapRecordAdapter extends RecyclerView.Adapter<AmapRecordAdapter.AmapRecordViewHolder> {
 
 
-    private List<AmapSportBean> sportBeanList;
+    private List<AmapRecordBean> sportBeanList;
     private Context mContext;
 
     private final DecimalFormat decimalFormat = new DecimalFormat("#.##");
@@ -37,7 +39,7 @@ public class AmapRecordAdapter extends RecyclerView.Adapter<AmapRecordAdapter.Am
         this.amapOnItemClickListener = amapOnItemClickListener;
     }
 
-    public AmapRecordAdapter(List<AmapSportBean> sportBeanList, Context mContext) {
+    public AmapRecordAdapter(List<AmapRecordBean> sportBeanList, Context mContext) {
         this.sportBeanList = sportBeanList;
         this.mContext = mContext;
     }
@@ -45,32 +47,63 @@ public class AmapRecordAdapter extends RecyclerView.Adapter<AmapRecordAdapter.Am
     @NonNull
     @Override
     public AmapRecordViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.item_amap_sport_record_layout,parent,false);
+        View view = LayoutInflater.from(mContext).inflate(R.layout.item_amap_sport_record_layout22,parent,false);
         return new AmapRecordViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull AmapRecordViewHolder holder, int position) {
-        AmapSportBean amapSportBean = sportBeanList.get(position);
-        try {
-            int sportType = amapSportBean.getSportType();
-            holder.typeImg.setImageResource(mapSportTypeImg(sportType));
-            holder.distanceTv.setText(decimalFormat.format(Float.valueOf(amapSportBean.getDistance())/1000)+"公里");
-            holder.durationTv.setText(amapSportBean.getCurrentSportTime());
-            holder.caloriesTv.setText(amapSportBean.getCalories()+"千卡");
-            holder.currTimeTv.setText(Utils.formatCusTime(amapSportBean.getEndSportTime()));
-        }catch (Exception e){
-            e.printStackTrace();
-        }
+        AmapRecordBean amapRecordBean = sportBeanList.get(position);
+        holder.itemMonthDayTv.setText(amapRecordBean.getMonthStr());
+        holder.walkCountTv.setText(amapRecordBean.getDistanceCount()+"");
+        holder.runCountTv.setText(amapRecordBean.getCaloriesCount());
+        holder.cycleCountTv.setText(amapRecordBean.getSportCount()+"次");
 
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
+
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext);
+        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        holder.itemDetailRv.setLayoutManager(linearLayoutManager);
+        AmapItemDetailAdapter amapItemDetailAdapter = new AmapItemDetailAdapter(amapRecordBean.getList(),mContext);
+        holder.itemDetailRv.setAdapter(amapItemDetailAdapter);
+
+
+        boolean isShow = amapRecordBean.isShow();
+        LinearLayout showLayout = holder.detailLayout;
+
+        showLayout.setVisibility(isShow ? View.VISIBLE : View.GONE);
+
+        ImageView statusImg = holder.itemMonthImg;
+
+
+        holder.itemMonthLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                int postion = holder.getLayoutPosition();
-                if(amapOnItemClickListener != null)
-                    amapOnItemClickListener.onAmapItemClick(postion);
+                amapRecordBean.setShow(!amapRecordBean.isShow());
+                notifyDataSetChanged();
             }
         });
+
+
+//        AmapSportBean amapSportBean = sportBeanList.get(position);
+//        try {
+//            int sportType = amapSportBean.getSportType();
+//            holder.typeImg.setImageResource(mapSportTypeImg(sportType));
+//            holder.distanceTv.setText(decimalFormat.format(Float.valueOf(amapSportBean.getDistance())/1000)+"公里");
+//            holder.durationTv.setText(amapSportBean.getCurrentSportTime());
+//            holder.caloriesTv.setText(amapSportBean.getCalories()+"千卡");
+//            holder.currTimeTv.setText(Utils.formatCusTime(amapSportBean.getEndSportTime()));
+//        }catch (Exception e){
+//            e.printStackTrace();
+//        }
+//
+//        holder.itemView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                int postion = holder.getLayoutPosition();
+//                if(amapOnItemClickListener != null)
+//                    amapOnItemClickListener.onAmapItemClick(postion);
+//            }
+//        });
     }
 
 
@@ -94,12 +127,12 @@ public class AmapRecordAdapter extends RecyclerView.Adapter<AmapRecordAdapter.Am
 
         private RecyclerView itemDetailRv;
 
-
-        private ImageView typeImg;  //每天的item类型
-        private TextView distanceTv;  //距离
-        private TextView caloriesTv;  //卡路里
-        private TextView durationTv;  //持续时间长
-        private TextView currTimeTv;  //天
+//
+//        private ImageView typeImg;  //每天的item类型
+//        private TextView distanceTv;  //距离
+//        private TextView caloriesTv;  //卡路里
+//        private TextView durationTv;  //持续时间长
+//        private TextView currTimeTv;  //天
 
         public AmapRecordViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -111,15 +144,16 @@ public class AmapRecordAdapter extends RecyclerView.Adapter<AmapRecordAdapter.Am
             walkCountTv = itemView.findViewById(R.id.itemRecordMonthWalkDistanceTv);
             runCountTv = itemView.findViewById(R.id.itemRecordMonthRunDistanceTv);
             cycleCountTv = itemView.findViewById(R.id.itemRecordMonthCycleDistanceTv);
+            detailLayout  = itemView.findViewById(R.id.itemRecordMonthDetailLayout);
 
             itemDetailRv = itemView.findViewById(R.id.itemRecordMonthRecyclerView);
 
 
-            typeImg = itemView.findViewById(R.id.itemAmapSportTypeImg);
-            distanceTv = itemView.findViewById(R.id.itemAmapSportDistanceTv);
-            caloriesTv = itemView.findViewById(R.id.itemAmapSportCaloriesTv);
-            durationTv = itemView.findViewById(R.id.itemAmapSportDurationTv);
-            currTimeTv = itemView.findViewById(R.id.itemAmapSportCurrDayTimeTv);
+//            typeImg = itemView.findViewById(R.id.itemAmapSportTypeImg);
+//            distanceTv = itemView.findViewById(R.id.itemAmapSportDistanceTv);
+//            caloriesTv = itemView.findViewById(R.id.itemAmapSportCaloriesTv);
+//            durationTv = itemView.findViewById(R.id.itemAmapSportDurationTv);
+//            currTimeTv = itemView.findViewById(R.id.itemAmapSportCurrDayTimeTv);
         }
     }
 
